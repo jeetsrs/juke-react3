@@ -7,8 +7,16 @@ export default class AllArtists extends Component {
   constructor () {
     super();
     this.state = {
-      artists: []
+      artists: [],
+      input: ""
     };
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange (event) {
+    // this event is a React SyntheticEvent!
+    console.log('Got this: ', event.target.value);
+    this.setState({input: event.target.value});
   }
 
   componentDidMount () {
@@ -19,10 +27,17 @@ export default class AllArtists extends Component {
 
   render () {
 
-    const artists = this.state.artists;
+    const artists = this.state.artists.filter(artist => artist.name.match(this.state.input));
 
     return (
       <div>
+        <form className="form-group" style={{marginTop: '20px'}}>
+        <input
+          className="form-control"
+          placeholder="Enter artist name"
+          onChange={this.handleChange}
+        />
+        </form>
         <h3>Artists</h3>
         <div className="list-group">
           {
