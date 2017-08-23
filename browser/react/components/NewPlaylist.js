@@ -6,7 +6,7 @@ export default class NewPlayList extends Component {
   constructor(props){
     super(props);
     this.state = {
-      input: "",
+      inputValue: "",
       buttonVal: true,
       modified: false
     };
@@ -16,24 +16,17 @@ export default class NewPlayList extends Component {
 
   handleChange (event) {
     event.preventDefault();
-    console.log('input: ', event.target.value);
-    this.setState({input: event.target.value, modified: true});
+    console.log('inputValue: ', event.target.value);
+    this.setState({inputValue: event.target.value, modified: true});
 
     (event.target.value.length >= 16 || event.target.value.length === 0) ? this.setState({buttonVal:true}) : this.setState({buttonVal:false});
   }
 
-  handleSubmit (event) {
-    event.preventDefault(); //**** THIS IS VERY IMPORTANT in FORMS to capture the submit post react refreshes ****
-    console.log("*********On Submit: ", this.state.input);
-
-    axios.post('/api/playlists/', { name: this.state.input })
-    .then(res => res.data)
-    .then(result => {
-      console.log(result); // response json from the server!
-    });
+  handleSubmit (evt) {
+    evt.preventDefault(); // prevent the page from refreshing
+    this.props.addPlaylist(this.state.inputValue); // pass the input value to the method from Main!
+    this.setState({inputValue: ''}); // reset the input value to be empty
   }
-
-
 
   render(){
     const warning = <div className="alert alert-warning">Please enter a name</div>;
@@ -41,7 +34,7 @@ export default class NewPlayList extends Component {
       <div className="well">
       <form className="form-horizontal" onSubmit={this.handleSubmit}>
         <fieldset>
-          {(this.state.modified && this.state.input.length === 0)
+          {(this.state.modified && this.state.inputValue.length === 0)
           ? warning
           : null
           }
@@ -50,7 +43,7 @@ export default class NewPlayList extends Component {
             <div className="form-group">
               <label className="col-xs-2 control-label">Name</label>
               <div className="col-xs-10">
-                <input className="form-control" type="text" onChange={this.handleChange} value={this.state.input}/>
+                <input className="form-control" type="text" onChange={this.handleChange} value={this.state.inputValue}/>
               </div>
             </div>
             <div className="form-group">
